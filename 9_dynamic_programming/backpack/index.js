@@ -9,29 +9,50 @@ class Item {
 }
 
 function packBackpack(items) {
-    const len = items.length;
     const cell = [];
+
+    function getCellCost(i, j) {
+        return cell[i][j][0];
+    }
+
+    function getCellItemsIdx(i, j) {
+
+        console.log("!!!", i, j, cell[i][j], cell[i][j].slice(1));
+        
+        return cell[i][j].slice(1);
+    }
+
+    const len = items.length;
     var item;
     var totalCost;
+    var itemsIdx;
 
     for (var i = 0; i < len; i++) {
         cell.push([]);
         for (var j = 0; j < BACKPACK_SIZE; j++) {
             item = items[i];
+
+            itemsIdx = [];
+
             if (item.weight < j + 1) {
                 totalCost = item.cost;
+                itemsIdx.push(i);
                 if (i > 0) {
-                    totalCost += cell[i - 1][j - item.weight];
+                    totalCost += getCellCost(i - 1, j - item.weight);
+                    itemsIdx.push(...getCellItemsIdx(i - 1, j - item.weight));
                 }
             }
             else {
                 totalCost = item.weight === j + 1 ? item.cost : 0;
+                itemsIdx.push(item.weight === j + 1 ? i : -1);
             }
 
-            if (i > 0 && cell[i - 1][j] > totalCost) {
-                totalCost = cell[i - 1][j];
+            if (i > 0 && getCellCost(i - 1, j) > totalCost) {
+                totalCost = getCellCost(i - 1, j);
+                itemsIdx.push(...getCellItemsIdx(i - 1, j));
             }
-            cell[i].push(totalCost);
+
+            cell[i].push([totalCost, ...itemsIdx]);
         }
     }
 
