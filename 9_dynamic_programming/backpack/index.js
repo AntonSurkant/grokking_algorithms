@@ -29,19 +29,16 @@ function packBackpack(items) {
         for (var j = 0; j < BACKPACK_SIZE; j++) {
             item = items[i];
 
+            totalCost = 0;
             itemsIdx = [];
 
-            if (item.weight < j + 1) {
+            if (item.weight <= j + 1) {
                 totalCost = item.cost;
                 itemsIdx.push(i);
-                if (i > 0) {
+                if (i > 0 && item.weight < j + 1) {
                     totalCost += getCellCost(i - 1, j - item.weight);
                     itemsIdx.push(...getCellItemsIdx(i - 1, j - item.weight));
                 }
-            }
-            else {
-                totalCost = item.weight === j + 1 ? item.cost : 0;
-                itemsIdx.push(item.weight === j + 1 ? i : -1);
             }
 
             if (i > 0 && getCellCost(i - 1, j) > totalCost) {
@@ -53,19 +50,15 @@ function packBackpack(items) {
         }
     }
 
-    console.log(cell);
-
-    return items;
+    return cell[len - 1][BACKPACK_SIZE - 1];
 }
 
 /////////// TESTS
 
 function runTest(items) {
     const packedItems = packBackpack(items);
-    console.log('Final cost:', 
-        packedItems.reduce((accumulator, item) => accumulator + item.cost, 0)
-    );
-    packedItems.map((item) => console.log(item.name));
+    console.log('Final cost:', packedItems[0]);
+    packedItems.slice(1).map((itemIdx) => console.log(items[itemIdx] ? items[itemIdx].name : ''));
 }
 
 const items = [
