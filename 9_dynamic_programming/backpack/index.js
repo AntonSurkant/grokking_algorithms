@@ -15,10 +15,7 @@ function packBackpack(items) {
         return cell[i][j][0];
     }
 
-    function getCellItemsIdx(i, j) {
-
-        console.log("!!!", i, j, cell[i][j], cell[i][j].slice(1));
-        
+    function getCellItemsIdx(i, j) {        
         return cell[i][j].slice(1);
     }
 
@@ -49,7 +46,7 @@ function packBackpack(items) {
 
             if (i > 0 && getCellCost(i - 1, j) > totalCost) {
                 totalCost = getCellCost(i - 1, j);
-                itemsIdx.push(...getCellItemsIdx(i - 1, j));
+                itemsIdx = getCellItemsIdx(i - 1, j);
             }
 
             cell[i].push([totalCost, ...itemsIdx]);
